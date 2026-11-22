@@ -1,13 +1,36 @@
-# Turning a Sony Xperia E4g into a Dedicated Walkman (No Root Required)
+<div align="center">
 
-How I converted a 2015 Sony Xperia E4g (E2003, Android 4.4.4 KitKat) into a stable,
-single‑purpose, kiosk‑style music player — booting straight into the Walkman app,
-with ~100 apps hidden, a newer Walkman version installed, and battery tuned for
-all‑day playback — **without keeping root**, and without breaking the device's
-notoriously fragile sleep/suspend behavior.
+# 🎧 Xperia E4g → Dedicated Walkman
 
-> This is a write‑up of a real debugging and modding session. Every device‑specific
+**Turning a 2015 Sony Xperia E4g (Android 4.4.4 KitKat) into a stable, single‑app,
+kiosk‑style music player — _without keeping root_.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Android 4.4 KitKat](https://img.shields.io/badge/Android-4.4%20KitKat%20·%20API%2019-3DDC84?logo=android&logoColor=white)](#the-device)
+[![root: not required](https://img.shields.io/badge/root-not%20required-success)](#3-the-kiosk-launcher-no-root)
+[![device: Xperia E4g](https://img.shields.io/badge/device-Xperia%20E4g%20·%20E2003-7F4FBF)](#the-device)
+[![SoC: MediaTek MT6732](https://img.shields.io/badge/SoC-MediaTek%20MT6732-0066B3)](#the-device)
+
+**Repository:** [github.com/projectsuha/xperia-e4g-walkman-kiosk](https://github.com/projectsuha/xperia-e4g-walkman-kiosk)
+
+</div>
+
+The full story of booting straight into the Walkman app, hiding ~100 apps, updating the
+Walkman app itself, and tuning battery for all‑day playback — all on **stock firmware,
+no root** — plus the dead ends, and the one diagnosis that made it all work.
+
+> 🔒 This is a write‑up of a real debugging and modding session. Every device‑specific
 > secret (IMEI, bootloader unlock code, serial number) has been deliberately left out.
+
+## Contents
+
+- [TL;DR](#tldr) · [Screenshots](#screenshots) · [The device](#the-device)
+- [1. Bootloader unlock](#1-bootloader-unlock)
+- [2. The root attempt & the suspend‑freeze saga](#2-the-root-attempt--and-the-suspend-freeze-saga)
+- [3. The kiosk launcher (no root)](#3-the-kiosk-launcher-no-root)
+- [4. Hiding ~100 apps without root](#4-hiding-100-apps-without-root)
+- [5. Speed & battery](#5-speed--battery) · [6. Updating the Walkman app without root](#6-updating-the-walkman-app--without-root)
+- [Dead ends — what didn't work](#dead-ends--what-we-tried-that-didnt-work-and-why) · [Key takeaways](#key-takeaways)
 
 ---
 
