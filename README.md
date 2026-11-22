@@ -28,6 +28,20 @@ choosing stability over a persistent `su`.
 
 ---
 
+## Screenshots
+
+<p>
+  <img src="images/walkman-home.png" alt="The Walkman player running 9.1.2" width="250">
+  &nbsp;&nbsp;
+  <img src="images/clearaudio-settings.png" alt="ClearAudio+ enabled, version 9.1.2.A.0.0" width="250">
+</p>
+
+*Left — the player (running the sideloaded Walkman `9.1.2`). Right — Walkman settings
+showing **ClearAudio+ enabled** and the installed version `9.1.2.A.0.0`. Album art and
+track titles are mosaicked for copyright.*
+
+---
+
 ## The device
 
 - **Model:** Sony Xperia E4g (`E2003`)
@@ -387,6 +401,7 @@ Smaller things that still cost real time:
 .
 ├── README.md            ← this article
 ├── LICENSE              ← MIT
+├── images/              ← screenshots (copyrighted content mosaicked)
 └── launcher/            ← the kiosk HOME launcher
     ├── AndroidManifest.xml
     ├── src/com/walkman/kiosk/HomeActivity.java
