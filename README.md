@@ -295,6 +295,77 @@ KitKat.
 
 ---
 
+## Dead ends — what we tried that didn't work (and why)
+
+A record of the approaches that failed, so you don't burn the same hours on this
+device (or this class of 2015 MediaTek phone).
+
+### Rooting attempts
+
+- **KingRoot** — sat on "Checking…" for 30+ minutes and never rooted. Its exploit is
+  fetched from a server at runtime and simply had nothing that worked against build
+  `25.0.A.1.28`. One‑click rooters are a lottery on obscure MediaTek devices.
+- **MediaTek BROM exploit (mtkclient / SP Flash Tool route)** — `Handshake failed`.
+  Sony locks the MTK **BROM/preloader** download mode on the E4g, so the BROM exploit
+  never even gets a handshake. Dead on arrival.
+- **SuperSU / system‑based root** — the "classic" E4g path leaves the stock ELF boot
+  untouched (so it wouldn't trigger the suspend freeze), but it means running a
+  closed‑source `su` from defunct/untrusted mirrors, fighting SELinux Enforcing on
+  KitKat. Rejected on supply‑chain + stability grounds for a device meant to just play
+  music.
+- **Magisk via a converted `ANDROID!` boot (fastboot)** — this *did* root the phone,
+  but it's exactly what broke suspend (see §2). Working root, unusable device.
+
+### Flashing / boot
+
+- **`fastboot flash recovery` and `FOTAKernel`** — `partition 'recovery' not support
+  flash` / `Command not allowed`. The E4g has **no fastboot‑flashable recovery
+  partition** (recovery lives inside `fotakernel`, not exposed to fastboot). No TWRP
+  this way.
+- **Re‑wrapping the patched boot back into Sony ELF and flashing via fastboot** —
+  rejected with `image is not a boot image`. fastboot validates and only accepts the
+  standard `ANDROID!` container; the native ELF/SIN must go through **flashmode**
+  (Sony S1 protocol), not fastboot.
+- **A permanent wakelock to "hold" the device awake** — didn't prevent the freeze,
+  because the hang was in the kernel display/suspend path caused by the boot *format*,
+  not an Android‑level wakelock race.
+
+### OS upgrade
+
+- **Android 5 (Lollipop)** — not possible. The E4g never received an official Lollipop
+  update, and there is no stable custom ROM for it. KitKat is the ceiling — which is
+  why everything here targets API 19.
+
+### App update
+
+- **Walkman `9.4.15.A.0.18`** — installed fine (certificate matched) but **crashes on
+  launch** inflating its modern navigation drawer on KitKat (see §6).
+  "Declares `minSdk 19`" is not the same as "runs on 19."
+
+### Tooling & workflow snags
+
+Smaller things that still cost real time:
+
+- **`magiskboot` on the ELF** — `Unsupported/Unknown image format`. It only reads the
+  standard `ANDROID!` container, so the Sony ELF had to be converted first (see §2).
+- **`pm disable` from adb** — `SecurityException` (uid 2000 may not change component
+  state on this build). `pm block` was the way in (see §4).
+- **`apksigner verify` on a *pulled* system APK** — `DOES NOT VERIFY`, because a
+  priv‑app's native libs are stripped to `/system/lib` at install time, so the pulled
+  `base.apk` no longer matches its own `MANIFEST.MF`. To read the signer, extract the
+  certificate from `META-INF/*.RSA` with `keytool -printcert` instead of verifying the
+  whole APK.
+- **The `d8` / `dx` wrapper scripts** — the `.bat`/`.sh` wrappers silently produced no
+  `classes.dex` on a modern JDK. Invoking the jar directly worked:
+  `java -cp <build-tools>/lib/d8.jar com.android.tools.r8.D8 …`.
+- **Downloading the APK through Cloudflare** — scripted/direct fetches were blocked
+  (challenge + CORS). A real in‑page click from an already‑cleared browser session let
+  the file download normally.
+- **`git add` on Windows** — `Filename too long` on a deep working path until
+  `git config core.longpaths true`.
+
+---
+
 ## Key takeaways
 
 1. **On Sony/MediaTek, the boot image *format* can affect suspend/resume** — test
